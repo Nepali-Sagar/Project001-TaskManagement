@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    body{
+      background-color: rgb(66, 66, 66);
+    }
+  </style>
+  <body>
+    <main>
+      <form action="/user/api/tasks/" method="post" id="task-form">
+        <input
+          type="text"
+          name="title"
+          id="title"
+          placeholder="Wake Up 6AM"
+          required
+        />
+        <textarea
+          name="description"
+          id="description"
+          placeholder="(optional)"
+        ></textarea>
+        <select name="status" id="status">
+          <option value="todo">todo</option>
+          <option value="in-progres">in-progres</option>
+          <option value="done">done</option>
+        </select>
+        <input type="date" name="dueDate" id="dueDate" required />
+        <input type="date" name="createdAt" id="createdAt" required />
+
+        <button type="submit">Add</button>
+      </form>
+
+      <h1>Display Tasks</h1>
+      <ul id="task-list"></ul>
+    </main>
+
+    <script src="/main.js"></script>
+  </body>
+</html>
