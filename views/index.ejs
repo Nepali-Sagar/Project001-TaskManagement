@@ -6,7 +6,7 @@
     <title>Document</title>
   </head>
   <style>
-    body{
+    body {
       background-color: rgb(66, 66, 66);
     }
   </style>
@@ -33,10 +33,14 @@
         <input type="date" name="dueDate" id="dueDate" required />
         <input type="date" name="createdAt" id="createdAt" required />
 
-        <button type="submit">Add</button>
+        <button class="addBtn" type="submit">Add</button>
       </form>
 
       <h1>Display Tasks</h1>
+      <form action="/user/api/tasks/json-data/" method="post" id="search-form">
+        <input type="search" name="search" id="search-field" />
+        <button>Search</button>
+      </form>
       <ul id="task-list"></ul>
     </main>
 

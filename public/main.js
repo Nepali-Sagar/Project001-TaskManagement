@@ -5,7 +5,9 @@ const t_status = document.getElementById("status");
 const t_dueDate = document.getElementById("dueDate");
 const t_createdAt = document.getElementById("createdAt");
 const taskForm = document.getElementById("task-form");
-let formBtn = document.querySelector("form button");
+let formBtn = document.querySelector(".addBtn");
+const searchForm = document.getElementById("search-form");
+const searchField = document.getElementById("search-field");
 
 async function loadAllData() {
   try {
@@ -32,11 +34,23 @@ function readData(id, title, description, status, dueDate, createdAt) {
   deleteButton.textContent = "Delete";
   editButton.textContent = "Edit";
 
-  li.textContent = `${title}`;
+  const body = [
+    ["title", title],
+    ["description", description],
+    ["status", status],
+    ["dueDate", dueDate],
+    ["createdAt", createdAt],
+  ];
 
-  list.append(li);
+  body.forEach(([ label, value ]) => {
+    const paragraph = document.createElement("p");
+    paragraph.textContent = `${label}: ${value || ""}`;
+    li.append(paragraph);
+  });
+
   li.appendChild(deleteButton);
   li.appendChild(editButton);
+  list.append(li);
 
   deleteButton.addEventListener("click", async () => {
     const response = await fetch(
@@ -58,11 +72,11 @@ function readData(id, title, description, status, dueDate, createdAt) {
 let taskId = null;
 function editTask(id, title, description, status, dueDate, createdAt) {
   taskId = id;
-  t_title.value = title,
-    t_description.value = description,
-    t_status.value = status,
-    t_dueDate.value = dueDate ? dueDate.slice(0, 10) : "",
-    t_createdAt.value = createdAt ? createdAt.slice(0, 10) : "";
+  ((t_title.value = title),
+    (t_description.value = description),
+    (t_status.value = status),
+    (t_dueDate.value = dueDate ? dueDate.slice(0, 10) : ""),
+    (t_createdAt.value = createdAt ? createdAt.slice(0, 10) : ""));
 
   formBtn.textContent = "Edit";
 }
@@ -95,13 +109,45 @@ taskForm.addEventListener("submit", async (event) => {
 
     if (!response.ok) throw new Error("Can't fetch data");
 
-    formBtn.textContent = "Add"
-    taskId = null
-    event.target.reset()
+    formBtn.textContent = "Add";
+    taskId = null;
+    event.target.reset();
 
     await loadAllData();
   } catch (error) {
     console.log(error);
+  }
+});
+
+searchForm.addEventListener("click", async (event) => {
+  event.preventDefault();
+
+  const searchValue = searchField.value;
+  if (!searchValue) {
+    console.log("Enter to search task");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `/user/api/tasks/json-data/${encodeURIComponent(searchValue)}`,
+      {
+        method: "POST",
+      },
+    );
+
+    if (!response.ok) throw new Error("Can't fetch data");
+    const result = await response.json();
+
+    list.innerHTML = "";
+
+    result.taskSearch.forEach(
+      ({ _id, title, description, status, dueDate, createdAt }) => {
+        readData(_id, title, description, status, dueDate, createdAt);
+      },
+    );
+  } catch (error) {
+    console.error(error);
   }
 });
 

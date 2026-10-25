@@ -50,34 +50,62 @@ const deleteTask = async (req, res) => {
 };
 
 const editTask = async (req, res) => {
-  try{
+  try {
+    const { title, description, status, dueDate, createdAt } = req.body;
+    const taskEdit = await taskModel.findByIdAndUpdate(
+      req.params.id,
+      { title, description, status, dueDate, createdAt },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
 
-    const {title, description, status, dueDate, createdAt} = req.body
-    const taskEdit = await taskModel.findByIdAndUpdate(req.params.id, {title, description, status, dueDate, createdAt},{
-      new: true, runValidators: true
-    })
-
-    if(!taskEdit) return res.status(404).json({
-      message: "Cannot update"
-    })
+    if (!taskEdit)
+      return res.status(404).json({
+        message: "Cannot update",
+      });
 
     res.status(200).json({
       message: "Update Successfully",
-      taskEdit
-    })
-
-  }
-  catch(error){
+      taskEdit,
+    });
+  } catch (error) {
     res.status(400).json({
       error: error.message,
-      message: "Invalid data"
-    })
+      message: "Invalid data",
+    });
   }
-}
+};
+
+const searchTask = async (req, res) => {
+  const searching = req.params.search.trim();
+
+  try {
+    const escapedSearchTerm = searching.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const taskSearch = await taskModel.find({
+      title: { $regex: escapedSearchTerm, $options: "i" },
+    });
+    if (!taskSearch) throw new Error({ message: "Invalid data entry." });
+
+    if (taskSearch === 0) return res.status(300).json({ message: "Not found" });
+
+    res.status(200).json({
+      message: "Found Successfully",
+      taskSearch,
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: error.message,
+      message: "Invalid data",
+    });
+  }
+};
 
 module.exports = {
   postTask,
   getTask,
   deleteTask,
   editTask,
+  searchTask,
 };
