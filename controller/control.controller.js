@@ -1,17 +1,23 @@
-const mongoose = require("mongoose");
 const taskModel = require("../models/schema");
 
 const postTask = async (req, res) => {
-  const { title, description, status, dueDate, createdAt } = req.body;
-  taskModel.create({
-    title,
-    description,
-    status,
-    dueDate,
-    createdAt,
-  });
+  try {
+    const { title, description, status, dueDate, createdAt } = req.body;
+    await taskModel.create({
+      title,
+      description,
+      status,
+      dueDate,
+      createdAt,
+    });
 
-  res.redirect("/user/api/tasks");
+    res.redirect("/user/api/tasks");
+  } catch (error) {
+    res.status(400).json({
+      error: error.message,
+      message: "Invalid data",
+    });
+  }
 };
 
 const getTask = async (req, res) => {
@@ -44,25 +50,30 @@ const deleteTask = async (req, res) => {
 };
 
 const editTask = async (req, res) => {
-  try {
+  try{
 
-    const { title, description, status, dueDate, createdAt } = req.body;
+    const {title, description, status, dueDate, createdAt} = req.body
+    const taskEdit = await taskModel.findByIdAndUpdate(req.params.id, {title, description, status, dueDate, createdAt},{
+      new: true, runValidators: true
+    })
 
-    const updateTask = await taskModel.findByIdAndUpdate(req.params.id,
-        {title, description, status, dueDate, createdAt},
-    {new: true, runValidators: true});
+    if(!taskEdit) return res.status(404).json({
+      message: "Cannot update"
+    })
 
-    if(!updateTask) throw new Error("Can't found")
+    res.status(200).json({
+      message: "Update Successfully",
+      taskEdit
+    })
 
-    res.status(200).json({message: "Update successfully", updateTask})
-
-  } catch (error) {
+  }
+  catch(error){
     res.status(400).json({
       error: error.message,
-      message: "Invalid data",
-    });
+      message: "Invalid data"
+    })
   }
-};
+}
 
 module.exports = {
   postTask,

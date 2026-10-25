@@ -1,11 +1,11 @@
 const list = document.querySelector("#task-list");
-let t_title = document.querySelector("#title");
-let t_description = document.querySelector("#description");
-let t_status = document.querySelector("#status");
-let t_dueDate = document.querySelector("#dueDate");
-let t_createdAt = document.querySelector("#createdAt");
-let submitBtn = document.querySelector("button[type='submit']");
-const taskForm = document.querySelector("#task-form");
+const t_title = document.getElementById("title");
+const t_description = document.getElementById("description");
+const t_status = document.getElementById("status");
+const t_dueDate = document.getElementById("dueDate");
+const t_createdAt = document.getElementById("createdAt");
+const taskForm = document.getElementById("task-form");
+let formBtn = document.querySelector("form button");
 
 async function loadAllData() {
   try {
@@ -32,10 +32,9 @@ function readData(id, title, description, status, dueDate, createdAt) {
   deleteButton.textContent = "Delete";
   editButton.textContent = "Edit";
 
-  li.textContent = `Title ${title}`;
+  li.textContent = `${title}`;
 
   list.append(li);
-
   li.appendChild(deleteButton);
   li.appendChild(editButton);
 
@@ -59,25 +58,25 @@ function readData(id, title, description, status, dueDate, createdAt) {
 let taskId = null;
 function editTask(id, title, description, status, dueDate, createdAt) {
   taskId = id;
-  t_title.value = title;
-  t_description.value = description;
-  t_status.value = status,
-  t_dueDate.value = dueDate ? dueDate.slice(0, 10) : "",
-  t_createdAt.value = createdAt ? createdAt.slice(0, 10) : "";
+  t_title.value = title,
+    t_description.value = description,
+    t_status.value = status,
+    t_dueDate.value = dueDate ? dueDate.slice(0, 10) : "",
+    t_createdAt.value = createdAt ? createdAt.slice(0, 10) : "";
 
-  submitBtn.textContent = "Edit";
+  formBtn.textContent = "Edit";
 }
 
 taskForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const isEditing = taskId !== null;
+  const editingId = taskId !== null;
 
-  const url = isEditing
+  const url = editingId
     ? `/user/api/tasks/json-data/${encodeURIComponent(taskId)}`
     : `/user/api/tasks/`;
 
-  const method = isEditing ? "PUT" : "POST";
+  const method = editingId ? "PUT" : "POST";
 
   const body = {
     title: t_title.value,
@@ -88,21 +87,21 @@ taskForm.addEventListener("submit", async (event) => {
   };
 
   try {
-    const response = await fetch(url,{
+    const response = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
 
-    if (!response.ok) throw new Error("Failed to update");
+    if (!response.ok) throw new Error("Can't fetch data");
 
-    taskId = null;
+    formBtn.textContent = "Add"
+    taskId = null
+    event.target.reset()
 
-    event.target.reset();
-    submitBtn.textContent = "Add";
     await loadAllData();
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 });
 
