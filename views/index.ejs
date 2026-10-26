@@ -3,13 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/style.css" />
     <title>Document</title>
   </head>
-  <style>
-    body {
-      background-color: rgb(66, 66, 66);
-    }
-  </style>
   <body>
     <main>
       <form action="/user/api/tasks/" method="post" id="task-form">
@@ -36,12 +32,18 @@
         <button class="addBtn" type="submit">Add</button>
       </form>
 
-      <h1>Display Tasks</h1>
-      <form action="/user/api/tasks/json-data/" method="post" id="search-form">
-        <input type="search" name="search" id="search-field" />
-        <button>Search</button>
-      </form>
-      <ul id="task-list"></ul>
+      <div class="content-display">
+        <!-- <h1>Display Tasks</h1> -->
+        <form
+          action="/user/api/tasks/json-data/"
+          method="post"
+          id="search-form"
+        >
+          <input type="search" name="search" id="search-field" />
+          <button>Search</button>
+        </form>
+        <ul id="task-list"></ul>
+      </div>
     </main>
 
     <script src="/main.js"></script>
