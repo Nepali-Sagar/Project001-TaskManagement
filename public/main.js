@@ -8,25 +8,26 @@ const taskForm = document.getElementById("task-form");
 let formBtn = document.querySelector(".addBtn");
 const searchForm = document.getElementById("search-form");
 const searchField = document.getElementById("search-field");
+const createdAt = new Date().toLocaleString();
 
 async function loadAllData() {
   try {
     const response = await fetch(
-      "http://localhost:5000/user/api/tasks/json-data",
+      "/user/api/tasks/json-data",
     );
     if (!response.ok) throw new Error("Can't fetch data");
     list.innerHTML = "";
 
     const tasks = await response.json();
-    tasks.forEach(({ _id, title, description, status, dueDate, createdAt }) => {
-      readData(_id, title, description, status, dueDate, createdAt);
+    tasks.forEach(({ _id, title, description, status, dueDate }) => {
+      readData(_id, title, description, status, dueDate);
     });
   } catch (error) {
     console.error(error);
   }
 }
 
-function readData(id, title, description, status, dueDate, createdAt) {
+function readData(id, title, description, status, dueDate) {
   const li = document.createElement("li");
   const btnContainer = document.createElement("div");
   const deleteButton = document.createElement("button");
@@ -54,7 +55,6 @@ function readData(id, title, description, status, dueDate, createdAt) {
   description_content.textContent = description || "notes"
   status_content.textContent = status
   dueDate_content.textContent = `Due: ${dueDate.slice(0, 10).replaceAll('-', '/')}`
-  createdAt_content.textContent = createdAt
 
 
   list_title.style.display = 'flex'
@@ -108,18 +108,17 @@ function readData(id, title, description, status, dueDate, createdAt) {
   });
 
   editButton.addEventListener("click", () => {
-    editTask(id, title, description, status, dueDate, createdAt);
+    editTask(id, title, description, status, dueDate);
   });
 }
 
 let taskId = null;
-function editTask(id, title, description, status, dueDate, createdAt) {
+function editTask(id, title, description, status, dueDate) {
   taskId = id;
   ((t_title.value = title),
     (t_description.value = description),
     (t_status.value = status),
-    (t_dueDate.value = dueDate ? dueDate.slice(0, 10) : ""),
-    (t_createdAt.value = createdAt ? createdAt.slice(0, 10) : ""));
+    (t_dueDate.value = dueDate ? dueDate.slice(0, 10) : ""));
 
   formBtn.textContent = "Edit";
 }
@@ -140,7 +139,7 @@ taskForm.addEventListener("submit", async (event) => {
     description: t_description.value,
     status: t_status.value,
     dueDate: t_dueDate.value,
-    createdAt: t_createdAt.value,
+    createdAt,
   };
 
   try {
@@ -185,8 +184,8 @@ searchForm.addEventListener("click", async (event) => {
     list.innerHTML = "";
 
     result.taskSearch.forEach(
-      ({ _id, title, description, status, dueDate, createdAt }) => {
-        readData(_id, title, description, status, dueDate, createdAt);
+      ({ _id, title, description, status, dueDate }) => {
+        readData(_id, title, description, status, dueDate);
       },
     );
   } catch (error) {
