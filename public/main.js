@@ -12,9 +12,7 @@ const createdAt = new Date().toLocaleString();
 
 async function loadAllData() {
   try {
-    const response = await fetch(
-      "/user/api/tasks/json-data",
-    );
+    const response = await fetch("/user/api/tasks/json-data");
     if (!response.ok) throw new Error("Can't fetch data");
     list.innerHTML = "";
 
@@ -37,13 +35,13 @@ function readData(id, title, description, status, dueDate) {
   editButton.textContent = "Edit";
 
   li.style.display = "flex";
-  li.style.justifyContent = "space-between"
+  li.style.justifyContent = "space-between";
   li.style.fontSize = "1.3em";
-  li.style.borderBottom = "0.8px solid black"
+  li.style.borderBottom = "0.8px solid black";
 
-  const list_title = document.createElement("div")
-  const list_date = document.createElement("div")
-  const list_content = document.createElement("div")
+  const list_title = document.createElement("div");
+  const list_date = document.createElement("div");
+  const list_content = document.createElement("div");
 
   let title_content = document.createElement("p");
   let description_content = document.createElement("p");
@@ -51,47 +49,45 @@ function readData(id, title, description, status, dueDate) {
   let dueDate_content = document.createElement("p");
   let createdAt_content = document.createElement("p");
 
-  title_content.textContent = title
-  description_content.textContent = description || "notes"
-  status_content.textContent = status
-  dueDate_content.textContent = `Due: ${dueDate.slice(0, 10).replaceAll('-', '/')}`
+  title_content.textContent = title;
+  description_content.textContent = description || "notes";
+  status_content.textContent = status;
+  dueDate_content.textContent = `Due: ${dueDate.slice(0, 10).replaceAll("-", "/")}`;
 
+  list_title.style.display = "flex";
+  list_title.style.alignContent = "center";
+  list_title.style.gap = "10px";
+  status_content.style.fontSize = "0.9em";
+  status_content.style.border = "0.5px solid black";
+  status_content.style.borderRadius = "9px";
+  status_content.style.padding = "2px";
+  status_content.style.fontWeight = "bold";
 
-  list_title.style.display = 'flex'
-  list_title.style.alignContent = 'center'
-  list_title.style.gap = '10px'
-  status_content.style.fontSize = '0.9em'
-  status_content.style.border = '0.5px solid black'
-  status_content.style.borderRadius = '9px'
-  status_content.style.padding = '2px'
-  status_content.style.fontWeight = 'bold'
+  list_date.style.marginTop = "7px";
+  description_content.style.fontSize = "0.8em";
+  description_content.style.color = "grey";
 
-  list_date.style.marginTop = "7px"
-  description_content.style.fontSize = '0.8em'
-  description_content.style.color = 'grey'
+  dueDate_content.style.fontSize = "0.8em";
 
-  dueDate_content.style.fontSize = '0.8em'
+  btnContainer.style.display = "flex";
+  btnContainer.style.flexDirection = "column";
+  btnContainer.style.gap = "4px";
 
-  btnContainer.style.display = 'flex'
-  btnContainer.style.flexDirection = 'column'
-  btnContainer.style.gap = '4px'
+  deleteButton.style.padding = "3px";
+  editButton.style.padding = "3px";
 
-  deleteButton.style.padding = '3px'
-  editButton.style.padding = '3px'
+  list_title.appendChild(title_content);
+  list_title.appendChild(status_content);
 
-  list_title.appendChild(title_content)
-  list_title.appendChild(status_content)
+  list_date.append(description_content);
+  list_date.append(dueDate_content);
 
-  list_date.append(description_content)
-  list_date.append(dueDate_content)
-
-  list_content.appendChild(list_title)
-  list_content.appendChild(list_date)
-
+  list_content.appendChild(list_title);
+  list_content.appendChild(list_date);
 
   btnContainer.appendChild(deleteButton);
   btnContainer.appendChild(editButton);
-  li.append(list_content)
+  li.append(list_content);
   li.append(btnContainer);
   list.append(li);
 
